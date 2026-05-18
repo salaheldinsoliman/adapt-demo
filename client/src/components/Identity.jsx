@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNode } from '../context/NodeContext';
 import { api } from '../utils/api';
 import { CheckCircle, XCircle, Loader, Shield, Edit3, Search, AlertTriangle, ExternalLink } from 'lucide-react';
+import Tooltip from './Tooltip';
 
 export default function Identity() {
   const { user, peerOrgs, peerConnected, refresh, refreshKey } = useNode();
@@ -94,9 +95,11 @@ export default function Identity() {
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{org.role}</p>
           </div>
         )}
-        <button onClick={() => setEditing(editing === org.id ? null : org.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}>
-          <Edit3 style={{ width: 13, height: 13 }} />
-        </button>
+        <Tooltip text={editing === org.id ? 'Cancel editing' : 'Edit organisation'} position="left">
+          <button onClick={() => setEditing(editing === org.id ? null : org.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}>
+            <Edit3 style={{ width: 13, height: 13 }} />
+          </button>
+        </Tooltip>
       </div>
       <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 10 }}>User: <span style={{ fontFamily: 'var(--mono)' }}>{org.username}</span></div>
       {org.verified ? (
@@ -115,10 +118,12 @@ export default function Identity() {
           )}
         </>
       ) : (
-        <button className="btn btn-p btn-sm" style={{ width: '100%', justifyContent: 'center' }}
-          onClick={() => { setVerifying(org); setRegNum(''); setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>
-          <Shield style={{ width: 12, height: 12 }} /> Register DID
-        </button>
+        <Tooltip text="Register a Decentralised Identifier" position="top">
+          <button className="btn btn-p btn-sm" style={{ width: '100%', justifyContent: 'center' }}
+            onClick={() => { setVerifying(org); setRegNum(''); setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>
+            <Shield style={{ width: 12, height: 12 }} /> Register DID
+          </button>
+        </Tooltip>
       )}
     </div>
   );
@@ -243,9 +248,11 @@ export default function Identity() {
                       </td>
                       <td>
                         {o.verified && (
-                          <button className="btn btn-s btn-sm" style={{ fontSize: 10.5, padding: '4px 10px' }} onClick={() => setCredentialOrg(o)}>
-                            <ExternalLink style={{ width: 11, height: 11 }} /> View Credential
-                          </button>
+                          <Tooltip text="View verifiable credential" position="left">
+                            <button className="btn btn-s btn-sm" style={{ fontSize: 10.5, padding: '4px 10px' }} onClick={() => setCredentialOrg(o)}>
+                              <ExternalLink style={{ width: 11, height: 11 }} /> View Credential
+                            </button>
+                          </Tooltip>
                         )}
                       </td>
                     </tr>
@@ -267,8 +274,12 @@ export default function Identity() {
                 <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 16 }}>Enter a business registration number. Use BRN-123456 to pass or BRN-000000 to see a denial.</p>
                 <div className="fg"><label>Registration Number</label><input value={regNum} onChange={e => setRegNum(e.target.value)} placeholder="e.g. BRN-123456" autoFocus /></div>
                 <div className="modal-act">
-                  <button className="btn btn-s" onClick={() => setVerifying(null)}>Cancel</button>
-                  <button className="btn btn-p" onClick={runVerification} disabled={regNum.length < 4}>Verify & Register</button>
+                  <Tooltip text="Cancel registration" position="top">
+                    <button className="btn btn-s" onClick={() => setVerifying(null)}>Cancel</button>
+                  </Tooltip>
+                  <Tooltip text="Verify registration number and issue DID" position="top">
+                    <button className="btn btn-p" onClick={runVerification} disabled={regNum.length < 4}>Verify & Register</button>
+                  </Tooltip>
                 </div>
               </>
             )}
@@ -308,8 +319,14 @@ export default function Identity() {
                   </div>
                 )}
                 <div className="modal-act">
-                  {stage === 'failed' && <button className="btn btn-s" onClick={() => { setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>Try Again</button>}
-                  <button className="btn btn-p" onClick={() => setVerifying(null)}>{stage === 'passed' ? 'Done' : 'Close'}</button>
+                  {stage === 'failed' && (
+                    <Tooltip text="Try a different registration number" position="top">
+                      <button className="btn btn-s" onClick={() => { setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>Try Again</button>
+                    </Tooltip>
+                  )}
+                  <Tooltip text={stage === 'passed' ? 'Close and return' : 'Close this dialog'} position="top">
+                    <button className="btn btn-p" onClick={() => setVerifying(null)}>{stage === 'passed' ? 'Done' : 'Close'}</button>
+                  </Tooltip>
                 </div>
               </>
             )}
@@ -353,7 +370,9 @@ export default function Identity() {
             </div>
 
             <div className="modal-act" style={{ marginTop: 16 }}>
-              <button className="btn btn-p" onClick={() => setCredentialOrg(null)}>Close</button>
+              <Tooltip text="Close credential view" position="top">
+                <button className="btn btn-p" onClick={() => setCredentialOrg(null)}>Close</button>
+              </Tooltip>
             </div>
           </div>
         </div>

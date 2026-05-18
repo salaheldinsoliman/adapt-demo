@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '../utils/api';
 import { useNode } from '../context/NodeContext';
 import { Plus, ChevronRight, CheckCircle, Circle, Clock, Zap, Hash, RefreshCw, Share2, X } from 'lucide-react';
+import Tooltip from './Tooltip';
 
 /* ─── helpers ─── */
 const fmtVal = (n, cur = 'USD') => {
@@ -158,12 +159,16 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Letters of Credit</h3>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn-secondary" onClick={() => setShowShare(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Share2 size={14} /> Share Finance Access
-            </button>
-            <button className="btn-primary" onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Plus size={14} /> New LC
-            </button>
+            <Tooltip text="Share finance access with another organisation" position="bottom">
+              <button className="btn-secondary" onClick={() => setShowShare(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Share2 size={14} /> Share Finance Access
+              </button>
+            </Tooltip>
+            <Tooltip text="Create a new Letter of Credit" position="bottom">
+              <button className="btn-primary" onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Plus size={14} /> New LC
+              </button>
+            </Tooltip>
           </div>
         </div>
 
@@ -209,7 +214,9 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
               <div style={{ fontWeight: 700, fontSize: 15 }}>{selectedLC.lcNumber}</div>
               <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedLC.ucr}</div>
             </div>
-            <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={16} color="#94a3b8" /></button>
+            <Tooltip text="Close detail panel" position="left">
+              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={16} color="#94a3b8" /></button>
+            </Tooltip>
           </div>
 
           <LCStepper status={selectedLC.status} />
@@ -251,9 +258,11 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
 
           {/* Advance status */}
           {selectedLC.status !== 'Drawn' && selectedLC.status !== 'Expired' && selectedLC.creatorOrgId === user.id && (
-            <button className="btn-primary" style={{ width: '100%' }} onClick={() => advanceStatus(selectedLC)}>
-              Advance to {LC_STATUSES[LC_STATUSES.indexOf(selectedLC.status) + 1]}
-            </button>
+            <Tooltip text={`Advance LC to ${LC_STATUSES[LC_STATUSES.indexOf(selectedLC.status) + 1]}`} position="top">
+              <button className="btn-primary" style={{ width: '100%' }} onClick={() => advanceStatus(selectedLC)}>
+                Advance to {LC_STATUSES[LC_STATUSES.indexOf(selectedLC.status) + 1]}
+              </button>
+            </Tooltip>
           )}
         </div>
       )}
@@ -264,7 +273,9 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
           <div className="card" style={{ width: 520, maxHeight: '90vh', overflowY: 'auto', padding: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>New Letter of Credit</h3>
-              <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              <Tooltip text="Close this dialog" position="left">
+                <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              </Tooltip>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
@@ -310,8 +321,12 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowCreate(false)}>Cancel</button>
-              <button className="btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Create LC</button>
+              <Tooltip text="Cancel LC creation" position="top">
+                <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowCreate(false)}>Cancel</button>
+              </Tooltip>
+              <Tooltip text="Create Letter of Credit" position="top">
+                <button className="btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Create LC</button>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -323,7 +338,9 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
           <div className="card" style={{ width: 400, padding: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>Share Finance Access</h3>
-              <button onClick={() => setShowShare(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              <Tooltip text="Close this dialog" position="left">
+                <button onClick={() => setShowShare(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              </Tooltip>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
@@ -342,8 +359,12 @@ function LCTab({ user, consignments, allOrgs, refresh, refreshKey }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowShare(false)}>Cancel</button>
-              <button className="btn-primary" style={{ flex: 1 }} onClick={handleShare}>Share</button>
+              <Tooltip text="Cancel sharing" position="top">
+                <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowShare(false)}>Cancel</button>
+              </Tooltip>
+              <Tooltip text="Grant finance access to selected organisation" position="top">
+                <button className="btn-primary" style={{ flex: 1 }} onClick={handleShare}>Share</button>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -426,9 +447,11 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Smart Contracts</h3>
-          <button className="btn-primary" onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Plus size={14} /> New Contract
-          </button>
+          <Tooltip text="Create a new smart contract" position="bottom">
+            <button className="btn-primary" onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Plus size={14} /> New Contract
+            </button>
+          </Tooltip>
         </div>
 
         {contracts.length === 0 ? (
@@ -496,7 +519,9 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
                 <div style={{ fontWeight: 700, fontSize: 15 }}>{c.contractRef}</div>
                 <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{c.ucr}</div>
               </div>
-              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={16} color="#94a3b8" /></button>
+              <Tooltip text="Close detail panel" position="left">
+                <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={16} color="#94a3b8" /></button>
+              </Tooltip>
             </div>
 
             {/* Amount + status */}
@@ -544,10 +569,12 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
                     {cond.metAt && <div style={{ fontSize: 10, color: '#94a3b8' }}>{new Date(cond.metAt).toLocaleString()}</div>}
                   </div>
                   {!cond.met && c.status !== 'Released' && c.status !== 'Settled' && c.status !== 'Cancelled' && c.creatorOrgId === user.id && (
-                    <button
-                      style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid #3b82f6', color: '#3b82f6', background: 'none', cursor: 'pointer', fontWeight: 600 }}
-                      onClick={() => markCondition(c, cond.id)}
-                    >Mark Met</button>
+                    <Tooltip text="Mark this condition as met" position="left">
+                      <button
+                        style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid #3b82f6', color: '#3b82f6', background: 'none', cursor: 'pointer', fontWeight: 600 }}
+                        onClick={() => markCondition(c, cond.id)}
+                      >Mark Met</button>
+                    </Tooltip>
                   )}
                 </div>
               ))}
@@ -562,25 +589,33 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
             {/* Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {c.status === 'Draft' && c.creatorOrgId === user.id && (
-                <button className="btn-primary" onClick={() => advanceContract(c, 'Active')}>
-                  Activate Contract
-                </button>
+                <Tooltip text="Activate this smart contract" position="top">
+                  <button className="btn-primary" onClick={() => advanceContract(c, 'Active')}>
+                    Activate Contract
+                  </button>
+                </Tooltip>
               )}
               {canRelease && !c.autoRelease && c.creatorOrgId === user.id && (
-                <button className="btn-primary" style={{ background: '#9333ea', borderColor: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                  onClick={() => advanceContract(c, 'Released')}>
-                  <Zap size={14} /> Simulate Release
-                </button>
+                <Tooltip text="Simulate payment release" position="top">
+                  <button className="btn-primary" style={{ background: '#9333ea', borderColor: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                    onClick={() => advanceContract(c, 'Released')}>
+                    <Zap size={14} /> Simulate Release
+                  </button>
+                </Tooltip>
               )}
               {c.status === 'Released' && c.creatorOrgId === user.id && (
-                <button className="btn-primary" style={{ background: '#15803d', borderColor: '#15803d' }} onClick={() => advanceContract(c, 'Settled')}>
-                  Mark Settled
-                </button>
+                <Tooltip text="Mark contract as settled" position="top">
+                  <button className="btn-primary" style={{ background: '#15803d', borderColor: '#15803d' }} onClick={() => advanceContract(c, 'Settled')}>
+                    Mark Settled
+                  </button>
+                </Tooltip>
               )}
               {(c.status === 'Draft' || c.status === 'Active') && c.creatorOrgId === user.id && (
-                <button className="btn-secondary" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => advanceContract(c, 'Cancelled')}>
-                  Cancel Contract
-                </button>
+                <Tooltip text="Cancel this smart contract" position="top">
+                  <button className="btn-secondary" style={{ color: '#ef4444', borderColor: '#ef4444' }} onClick={() => advanceContract(c, 'Cancelled')}>
+                    Cancel Contract
+                  </button>
+                </Tooltip>
               )}
             </div>
           </div>
@@ -593,7 +628,9 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
           <div className="card" style={{ width: 560, maxHeight: '90vh', overflowY: 'auto', padding: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 17 }}>New Smart Contract</h3>
-              <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              <Tooltip text="Close this dialog" position="left">
+                <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+              </Tooltip>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div style={{ gridColumn: '1/-1' }}>
@@ -640,9 +677,11 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
             <div style={{ marginTop: 18 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <label style={{ fontSize: 12, fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>Conditions *</label>
-                <button type="button" style={{ fontSize: 12, color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={addCondition}>
-                  + Add Condition
-                </button>
+                <Tooltip text="Add another condition" position="left">
+                  <button type="button" style={{ fontSize: 12, color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={addCondition}>
+                    + Add Condition
+                  </button>
+                </Tooltip>
               </div>
               {form.conditions.map((cond, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'flex-start' }}>
@@ -655,17 +694,23 @@ function ContractsTab({ user, consignments, allOrgs, refresh, refreshKey }) {
                       onChange={e => updateCondition(i, 'docType', e.target.value)} />
                   </div>
                   {form.conditions.length > 1 && (
-                    <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px' }} onClick={() => removeCondition(i)}>
-                      <X size={14} color="#ef4444" />
-                    </button>
+                    <Tooltip text="Remove this condition" position="left">
+                      <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px' }} onClick={() => removeCondition(i)}>
+                        <X size={14} color="#ef4444" />
+                      </button>
+                    </Tooltip>
                   )}
                 </div>
               ))}
             </div>
 
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowCreate(false)}>Cancel</button>
-              <button className="btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Create Contract</button>
+              <Tooltip text="Cancel contract creation" position="top">
+                <button className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowCreate(false)}>Cancel</button>
+              </Tooltip>
+              <Tooltip text="Create smart contract and anchor on ledger" position="top">
+                <button className="btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Create Contract</button>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -702,18 +747,20 @@ export default function TradeFinance() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '2px solid #f1f5f9' }}>
         {[
-          { id: 'lc', label: '📄 Letters of Credit' },
-          { id: 'contracts', label: '⚡ Smart Contracts' },
+          { id: 'lc', label: '📄 Letters of Credit', tip: 'View Letters of Credit' },
+          { id: 'contracts', label: '⚡ Smart Contracts', tip: 'View Smart Contracts' },
         ].map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            padding: '10px 24px', background: 'none', border: 'none', cursor: 'pointer',
-            fontSize: 14, fontWeight: tab === t.id ? 700 : 400,
-            color: tab === t.id ? '#3b82f6' : '#64748b',
-            borderBottom: `2px solid ${tab === t.id ? '#3b82f6' : 'transparent'}`,
-            marginBottom: -2,
-          }}>
-            {t.label}
-          </button>
+          <Tooltip key={t.id} text={t.tip} position="bottom">
+            <button onClick={() => setTab(t.id)} style={{
+              padding: '10px 24px', background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: 14, fontWeight: tab === t.id ? 700 : 400,
+              color: tab === t.id ? '#3b82f6' : '#64748b',
+              borderBottom: `2px solid ${tab === t.id ? '#3b82f6' : 'transparent'}`,
+              marginBottom: -2,
+            }}>
+              {t.label}
+            </button>
+          </Tooltip>
         ))}
       </div>
 

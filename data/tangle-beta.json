@@ -1,5 +1,14 @@
 [
   {
+    "id": "9b8f7bad1f6d570d",
+    "timestamp": "2026-05-18T07:03:06.576Z",
+    "hash": "0x6ed1a3a01293f7f12b33dd595e6e9e40",
+    "type": "network",
+    "action": "Peer Connected",
+    "actor": "System",
+    "details": "P2P handshake completed with peer at ws://localhost:4000. Organisations now discoverable."
+  },
+  {
     "id": "c95211c55d6865b5",
     "timestamp": "2026-05-11T14:24:52.965Z",
     "hash": "0xbee809352238124bd8ef3904258b60ce",

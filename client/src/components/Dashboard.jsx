@@ -6,6 +6,7 @@ import {
   FileStack, TrendingUp, Activity, Wifi, WifiOff, Radio, Link2, Unlink, Server,
   AlertTriangle, FileText, Download, Eye, Code2, X, ChevronLeft, Globe, ArrowRight
 } from 'lucide-react';
+import Tooltip from './Tooltip';
 
 function fmtValue(val, currency = 'USD') {
   if (!val || isNaN(Number(val))) return '—';
@@ -114,9 +115,11 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
     return (
       <div className="stack">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button className="btn btn-s btn-sm" onClick={() => setViewingXml(null)}>
-            <ChevronLeft style={{ width: 13, height: 13 }} /> Back to Dashboard
-          </button>
+          <Tooltip text="Back to Dashboard" position="right">
+            <button className="btn btn-s btn-sm" onClick={() => setViewingXml(null)}>
+              <ChevronLeft style={{ width: 13, height: 13 }} /> Back to Dashboard
+            </button>
+          </Tooltip>
           <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{viewingXml.title} · {selectedC?.ucr}</span>
         </div>
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -206,7 +209,9 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                     style={{ background: selectedC?.id === c.id ? 'var(--accent-light)' : undefined, cursor: 'pointer' }}
                   >
                     <td>
-                      <button className="ucr-link" onClick={e => { e.stopPropagation(); onViewDocs?.(c); }}>{c.ucr}</button>
+                      <Tooltip text={`View documents for ${c.ucr}`} position="right">
+                        <button className="ucr-link" onClick={e => { e.stopPropagation(); onViewDocs?.(c); }}>{c.ucr}</button>
+                      </Tooltip>
                       <div className="ucr-date">{c.shipDate || new Date(c.createdAt).toLocaleDateString()}</div>
                     </td>
                     <td>
@@ -258,11 +263,17 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
             </div>
             <div className="node-status-actions">
               {peerConnected
-                ? <button className="btn btn-sm btn-d" onClick={handleDisconnect}><Unlink style={{ width: 11, height: 11 }} /> Disconnect</button>
-                : <button className="btn btn-sm btn-p" onClick={() => setShowDiscover(true)}><Radio style={{ width: 11, height: 11 }} /> Connect</button>}
-              <button className="btn btn-sm btn-s" onClick={() => onNavigate?.('network')}>
-                <Globe style={{ width: 11, height: 11 }} /> View Network <ArrowRight style={{ width: 11, height: 11 }} />
-              </button>
+                ? <Tooltip text="Disconnect from peer node" position="top">
+                    <button className="btn btn-sm btn-d" onClick={handleDisconnect}><Unlink style={{ width: 11, height: 11 }} /> Disconnect</button>
+                  </Tooltip>
+                : <Tooltip text="Connect to peer node" position="top">
+                    <button className="btn btn-sm btn-p" onClick={() => setShowDiscover(true)}><Radio style={{ width: 11, height: 11 }} /> Connect</button>
+                  </Tooltip>}
+              <Tooltip text="Go to Network view" position="top">
+                <button className="btn btn-sm btn-s" onClick={() => onNavigate?.('network')}>
+                  <Globe style={{ width: 11, height: 11 }} /> View Network <ArrowRight style={{ width: 11, height: 11 }} />
+                </button>
+              </Tooltip>
             </div>
             {errorCount > 0 && (
               <div className="node-status-alert">
@@ -316,7 +327,9 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                 {selectedC.vessel && <> &nbsp;·&nbsp; {selectedC.vessel}</>}
               </div>
             </div>
-            <button className="btn btn-s btn-sm" onClick={() => setSelectedC(null)}><X style={{ width: 12, height: 12 }} /> Close</button>
+            <Tooltip text="Close document panel" position="left">
+              <button className="btn btn-s btn-sm" onClick={() => setSelectedC(null)}><X style={{ width: 12, height: 12 }} /> Close</button>
+            </Tooltip>
           </div>
 
           {selectedC.errorDescription && (
@@ -350,9 +363,11 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                     </div>
                     <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                       {isXml && (
-                        <button className="btn btn-s btn-sm" onClick={() => setViewingXml(d)}>
-                          <Eye style={{ width: 11, height: 11 }} /> View XML
-                        </button>
+                        <Tooltip text={`View XML for ${d.title}`} position="left">
+                          <button className="btn btn-s btn-sm" onClick={() => setViewingXml(d)}>
+                            <Eye style={{ width: 11, height: 11 }} /> View XML
+                          </button>
+                        </Tooltip>
                       )}
                       {d.filename && (
                         <a href={api.downloadUrl(d.id)} className="btn btn-s btn-sm" style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
@@ -386,11 +401,17 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                   </div>
                   {n.connected
                     ? <span className="pill pill-g pill-dot">Connected</span>
-                    : <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>}
+                    : <Tooltip text="Connect to this node" position="left">
+                        <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>
+                      </Tooltip>}
                 </div>
               ))
             )}
-            <div className="modal-act"><button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button></div>
+            <div className="modal-act">
+              <Tooltip text="Close this dialog" position="top">
+                <button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button>
+              </Tooltip>
+            </div>
           </div>
         </div>
       )}

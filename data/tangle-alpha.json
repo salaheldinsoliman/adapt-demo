@@ -1,5 +1,14 @@
 [
   {
+    "id": "be703bd7c461d584",
+    "timestamp": "2026-05-18T07:03:06.580Z",
+    "hash": "0x26be95679603637a78819cb7267f32c0",
+    "type": "network",
+    "action": "Peer Connected",
+    "actor": "System",
+    "details": "Inbound P2P connection accepted. Peer orgs now discoverable."
+  },
+  {
     "id": "43896013a7b69c0d",
     "timestamp": "2026-05-11T14:24:52.964Z",
     "hash": "0x1f2a5046e2ba2f74fb55583b5d1fa48e",
@@ -916,5 +925,41 @@
     "action": "Finance Seeded",
     "actor": "AtlasPhosphate S.A.",
     "details": "Contract SC-2026-ATW-0102 deployed for UCR-2026-MA-NG-00102. 2 release conditions. Hash: 0x64775dfb863edb3ff7b09c8084a9c907."
+  },
+  {
+    "id": "fe9c754f127d676c",
+    "timestamp": "2026-02-18T09:00:00.000Z",
+    "hash": "0x2a6508c11a64b91b61be710c8fab2923",
+    "type": "finance",
+    "action": "Finance Seeded",
+    "actor": "AtlasPhosphate S.A.",
+    "details": "Contract SC-2026-ATW-0101 deployed for UCR-2026-MA-NG-00101. 3 release conditions. Hash: 0x4c32daa2fa6590528b1d1dd22b095e45."
+  },
+  {
+    "id": "dc8854ebbd4094d7",
+    "timestamp": "2026-02-20T11:30:00.000Z",
+    "hash": "0x9685663949188fb4aeb97f4306c72140",
+    "type": "finance",
+    "action": "Finance Seeded",
+    "actor": "AtlasPhosphate S.A.",
+    "details": "Contract SC-2026-ATW-0102 deployed for UCR-2026-MA-NG-00102. 2 release conditions. Hash: 0x2dd8d19a8e144273d5824fb13c4a7541."
+  },
+  {
+    "id": "d150557e838c81d1",
+    "timestamp": "2026-02-18T09:00:00.000Z",
+    "hash": "0xcf12cd939e4e6ffa95112077c449cee8",
+    "type": "finance",
+    "action": "Finance Seeded",
+    "actor": "AtlasPhosphate S.A.",
+    "details": "Contract SC-2026-ATW-0101 deployed for UCR-2026-MA-NG-00101. 3 release conditions. Hash: 0xdd58648441366a86a15e14911255b871."
+  },
+  {
+    "id": "78da9cd437c5a9f6",
+    "timestamp": "2026-02-20T11:30:00.000Z",
+    "hash": "0x1e037338a4f200427988cdd792a2d43d",
+    "type": "finance",
+    "action": "Finance Seeded",
+    "actor": "AtlasPhosphate S.A.",
+    "details": "Contract SC-2026-ATW-0102 deployed for UCR-2026-MA-NG-00102. 2 release conditions. Hash: 0xf5c3d9cb2d4876e8eff644bd2b62cac1."
   }
 ]

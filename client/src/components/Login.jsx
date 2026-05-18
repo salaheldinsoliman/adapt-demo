@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNode } from '../context/NodeContext';
+import Tooltip from './Tooltip';
 
 const ALPHA_CREDS = [
   { role: 'Exporter · Morocco',          username: 'atlas',      label: 'AtlasPhosphate S.A.' },
@@ -73,9 +74,11 @@ export default function Login() {
             <label>Password</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
           </div>
-          <button type="submit" className="btn btn-p" style={{ width: '100%', justifyContent: 'center', padding: '10px 16px' }} disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
+          <Tooltip text="Sign in to your account" position="top">
+            <button type="submit" className="btn btn-p" style={{ width: '100%', justifyContent: 'center', padding: '10px 16px' }} disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </Tooltip>
         </form>
 
         <div className="demo-creds">
