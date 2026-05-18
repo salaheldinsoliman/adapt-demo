@@ -4,7 +4,7 @@ import { api } from '../utils/api';
 import TradeNetworkPanel from './TradeNetworkPanel';
 import { countryFromRole } from '../data/countries';
 import { Server, Link2, Globe } from 'lucide-react';
-import Tooltip from './Tooltip';
+import InfoTip from './InfoTip';
 
 export default function Network() {
   const { user, nodeInfo, peerConnected, peerOrgs, tangleLog, refreshKey, refresh } = useNode();
@@ -101,7 +101,7 @@ export default function Network() {
                 const key = `local-${o.id}`;
                 const isActive = selection.expandedOrgKey === key;
                 return (
-                  <Tooltip key={o.id} text={hasCountry ? `Focus ${o.name} on map` : o.name} position="right">
+                  <InfoTip key={o.id} title={hasCountry ? `Focus ${o.name} on map` : o.name} description={hasCountry ? "Pan the world map to this organisation's location" : "This organisation has no mapped geographic location"} position="right">
                     <button
                       type="button"
                       className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
@@ -115,7 +115,7 @@ export default function Network() {
                       </div>
                       {o.verified && <span className="pill pill-g pill-dot">DID</span>}
                     </button>
-                  </Tooltip>
+                  </InfoTip>
                 );
               })}
             </div>
@@ -141,7 +141,7 @@ export default function Network() {
                 const key = `peer-${o.id}`;
                 const isActive = selection.expandedOrgKey === key;
                 return (
-                  <Tooltip key={o.id} text={hasCountry ? `Focus ${o.name} on map` : o.name} position="left">
+                  <InfoTip key={o.id} title={hasCountry ? `Focus ${o.name} on map` : o.name} description={hasCountry ? "Pan the world map to this organisation's location" : "This organisation has no mapped geographic location"} position="left">
                     <button
                       type="button"
                       className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
@@ -155,7 +155,7 @@ export default function Network() {
                       </div>
                       {o.verified && <span className="pill pill-g pill-dot">DID</span>}
                     </button>
-                  </Tooltip>
+                  </InfoTip>
                 );
               })}
             </div>
@@ -180,16 +180,16 @@ export default function Network() {
                   </div>
                   {n.connected
                     ? <span className="pill pill-g pill-dot">Connected</span>
-                    : <Tooltip text="Connect to this node" position="left">
+                    : <InfoTip title="Connect to this node" description="Establish a peer connection with this network node" position="left">
                         <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>
-                      </Tooltip>}
+                      </InfoTip>}
                 </div>
               ))
             )}
             <div className="modal-act">
-              <Tooltip text="Close this dialog" position="top">
+              <InfoTip title="Close this dialog" description="Discard changes and close this dialog" position="top">
                 <button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button>
-              </Tooltip>
+              </InfoTip>
             </div>
           </div>
         </div>

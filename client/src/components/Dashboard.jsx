@@ -6,7 +6,7 @@ import {
   FileStack, TrendingUp, Activity, Wifi, WifiOff, Radio, Link2, Unlink, Server,
   AlertTriangle, FileText, Download, Eye, Code2, X, ChevronLeft, Globe, ArrowRight
 } from 'lucide-react';
-import Tooltip from './Tooltip';
+import InfoTip from './InfoTip';
 
 function fmtValue(val, currency = 'USD') {
   if (!val || isNaN(Number(val))) return '—';
@@ -115,11 +115,11 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
     return (
       <div className="stack">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Tooltip text="Back to Dashboard" position="right">
+          <InfoTip title="Back to Dashboard" description="Return to the main overview screen" position="right">
             <button className="btn btn-s btn-sm" onClick={() => setViewingXml(null)}>
               <ChevronLeft style={{ width: 13, height: 13 }} /> Back to Dashboard
             </button>
-          </Tooltip>
+          </InfoTip>
           <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{viewingXml.title} · {selectedC?.ucr}</span>
         </div>
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -209,9 +209,9 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                     style={{ background: selectedC?.id === c.id ? 'var(--accent-light)' : undefined, cursor: 'pointer' }}
                   >
                     <td>
-                      <Tooltip text={`View documents for ${c.ucr}`} position="right">
+                      <InfoTip title={`View documents for ${c.ucr}`} description="Open all trade documents attached to this consignment" position="right">
                         <button className="ucr-link" onClick={e => { e.stopPropagation(); onViewDocs?.(c); }}>{c.ucr}</button>
-                      </Tooltip>
+                      </InfoTip>
                       <div className="ucr-date">{c.shipDate || new Date(c.createdAt).toLocaleDateString()}</div>
                     </td>
                     <td>
@@ -263,17 +263,17 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
             </div>
             <div className="node-status-actions">
               {peerConnected
-                ? <Tooltip text="Disconnect from peer node" position="top">
+                ? <InfoTip title="Disconnect from peer node" description="Remove the peer node connection and return to local-only mode" position="top">
                     <button className="btn btn-sm btn-d" onClick={handleDisconnect}><Unlink style={{ width: 11, height: 11 }} /> Disconnect</button>
-                  </Tooltip>
-                : <Tooltip text="Connect to peer node" position="top">
+                  </InfoTip>
+                : <InfoTip title="Connect to peer node" description="Establish a new peer connection to share data between nodes" position="top">
                     <button className="btn btn-sm btn-p" onClick={() => setShowDiscover(true)}><Radio style={{ width: 11, height: 11 }} /> Connect</button>
-                  </Tooltip>}
-              <Tooltip text="Go to Network view" position="top">
+                  </InfoTip>}
+              <InfoTip title="Go to Network view" description="Open the full geographic network topology panel" position="top">
                 <button className="btn btn-sm btn-s" onClick={() => onNavigate?.('network')}>
                   <Globe style={{ width: 11, height: 11 }} /> View Network <ArrowRight style={{ width: 11, height: 11 }} />
                 </button>
-              </Tooltip>
+              </InfoTip>
             </div>
             {errorCount > 0 && (
               <div className="node-status-alert">
@@ -327,9 +327,9 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                 {selectedC.vessel && <> &nbsp;·&nbsp; {selectedC.vessel}</>}
               </div>
             </div>
-            <Tooltip text="Close document panel" position="left">
+            <InfoTip title="Close document panel" description="Collapse the document viewer and return to the list" position="left">
               <button className="btn btn-s btn-sm" onClick={() => setSelectedC(null)}><X style={{ width: 12, height: 12 }} /> Close</button>
-            </Tooltip>
+            </InfoTip>
           </div>
 
           {selectedC.errorDescription && (
@@ -363,11 +363,11 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                     </div>
                     <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                       {isXml && (
-                        <Tooltip text={`View XML for ${d.title}`} position="left">
+                        <InfoTip title={`View XML for ${d.title}`} description="Preview the raw XML data for this trade document" position="left">
                           <button className="btn btn-s btn-sm" onClick={() => setViewingXml(d)}>
                             <Eye style={{ width: 11, height: 11 }} /> View XML
                           </button>
-                        </Tooltip>
+                        </InfoTip>
                       )}
                       {d.filename && (
                         <a href={api.downloadUrl(d.id)} className="btn btn-s btn-sm" style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
@@ -401,16 +401,16 @@ export default function Dashboard({ searchQ = '', onViewDocs, onNavigate }) {
                   </div>
                   {n.connected
                     ? <span className="pill pill-g pill-dot">Connected</span>
-                    : <Tooltip text="Connect to this node" position="left">
+                    : <InfoTip title="Connect to this node" description="Establish a peer connection with this network node" position="left">
                         <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>
-                      </Tooltip>}
+                      </InfoTip>}
                 </div>
               ))
             )}
             <div className="modal-act">
-              <Tooltip text="Close this dialog" position="top">
+              <InfoTip title="Close this dialog" description="Discard changes and close this dialog" position="top">
                 <button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button>
-              </Tooltip>
+              </InfoTip>
             </div>
           </div>
         </div>

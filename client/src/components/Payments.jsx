@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNode } from '../context/NodeContext';
 import { api } from '../utils/api';
 import { CreditCard, Plus, X, ChevronRight, CheckCircle, Clock, AlertCircle, Share2, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
-import Tooltip from './Tooltip';
+import InfoTip from './InfoTip';
 
 function fmtVal(n, cur = 'USD') {
   if (!n || isNaN(Number(n))) return '—';
@@ -146,16 +146,16 @@ export default function Payments() {
           <div style={{ padding: '16px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)' }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Payment Records</h3>
             <div style={{ display: 'flex', gap: 8 }}>
-              <Tooltip text="Share payment access with another organisation" position="bottom">
+              <InfoTip title="Share payment access with another organisation" description="Grant another organisation visibility of your payment records" position="bottom">
                 <button className="btn btn-s btn-sm" onClick={() => { setShowShare(true); setShareConsignment(consignments[0]?.id || ''); }}>
                   <Share2 style={{ width: 13, height: 13 }} /> Share Finance Access
                 </button>
-              </Tooltip>
-              <Tooltip text="Create a new payment record" position="bottom">
+              </InfoTip>
+              <InfoTip title="Create a new payment record" description="Open the form to log a new trade payment or invoice settlement" position="bottom">
                 <button className="btn btn-p btn-sm" onClick={() => setShowNew(true)}>
                   <Plus style={{ width: 13, height: 13 }} /> New Payment
                 </button>
-              </Tooltip>
+              </InfoTip>
             </div>
           </div>
 
@@ -196,9 +196,9 @@ export default function Payments() {
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--card-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ fontSize: 13, fontWeight: 700 }}>Payment Detail</div>
-              <Tooltip text="Close payment detail" position="left">
+              <InfoTip title="Close payment detail" description="Collapse the payment details panel and return to the payments list" position="left">
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}><X style={{ width: 16, height: 16 }} /></button>
-              </Tooltip>
+              </InfoTip>
             </div>
             <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <StatusPill status={selected.status} />
@@ -231,16 +231,16 @@ export default function Payments() {
                       <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{selected.currency}</span>
                     </div>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      <Tooltip text="Confirm payment received" position="top">
+                      <InfoTip title="Confirm payment received" description="Mark this payment as received and update the ledger with the settled amount" position="top">
                         <button className="btn btn-s btn-sm" onClick={() => { const amt = Number(confirmAmt) || selected.paidAmount; const newAmt = selected.paidAmount + amt; handleStatusUpdate(newAmt >= selected.amount ? 'Paid' : 'Partially Paid', newAmt); setConfirmAmt(''); }}>
                           <CheckCircle style={{ width: 12, height: 12 }} /> Confirm Receipt
                         </button>
-                      </Tooltip>
-                      <Tooltip text="Mark this payment as overdue" position="top">
+                      </InfoTip>
+                      <InfoTip title="Mark this payment as overdue" description="Flag this payment as past its due date" position="top">
                         <button className="btn btn-s btn-sm" style={{ borderColor: '#ef4444', color: '#ef4444' }} onClick={() => handleStatusUpdate('Overdue', selected.paidAmount)}>
                           <AlertTriangle style={{ width: 12, height: 12 }} /> Mark Overdue
                         </button>
-                      </Tooltip>
+                      </InfoTip>
                     </div>
                   </div>
                 )}
@@ -261,9 +261,9 @@ export default function Payments() {
           <div className="card" style={{ width: 480, maxHeight: '90vh', overflow: 'auto', padding: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700 }}>New Payment Record</h3>
-              <Tooltip text="Close this dialog" position="left">
+              <InfoTip title="Close this dialog" description="Discard changes and close this dialog" position="left">
                 <button onClick={() => setShowNew(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><X style={{ width: 18, height: 18 }} /></button>
-              </Tooltip>
+              </InfoTip>
             </div>
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div className="fg">
@@ -306,12 +306,12 @@ export default function Payments() {
                 <input value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Optional notes…" />
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
-                <Tooltip text="Cancel payment creation" position="top">
+                <InfoTip title="Cancel payment creation" description="Discard the form and return to the payments list" position="top">
                   <button type="button" className="btn btn-s" onClick={() => setShowNew(false)}>Cancel</button>
-                </Tooltip>
-                <Tooltip text="Save and create this payment record" position="top">
+                </InfoTip>
+                <InfoTip title="Save and create this payment record" description="Submit and save this payment record to the ledger" position="top">
                   <button type="submit" className="btn btn-p">Create Payment</button>
-                </Tooltip>
+                </InfoTip>
               </div>
             </form>
           </div>
@@ -324,9 +324,9 @@ export default function Payments() {
           <div className="card" style={{ width: 400, padding: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700 }}>Share Finance Access</h3>
-              <Tooltip text="Close this dialog" position="left">
+              <InfoTip title="Close this dialog" description="Discard changes and close this dialog" position="left">
                 <button onClick={() => setShowShare(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><X style={{ width: 18, height: 18 }} /></button>
-              </Tooltip>
+              </InfoTip>
             </div>
             <form onSubmit={handleShare} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div className="fg">
@@ -347,12 +347,12 @@ export default function Payments() {
                 The selected organisation will gain viewer access to payment records, letters of credit, and smart contracts for this consignment.
               </p>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-                <Tooltip text="Cancel sharing" position="top">
+                <InfoTip title="Cancel sharing" description="Close without granting any finance access" position="top">
                   <button type="button" className="btn btn-s" onClick={() => setShowShare(false)}>Cancel</button>
-                </Tooltip>
-                <Tooltip text="Grant finance access to selected organisation" position="top">
+                </InfoTip>
+                <InfoTip title="Grant finance access to selected organisation" description="Allow this organisation to view your finance records" position="top">
                   <button type="submit" className="btn btn-p"><Share2 style={{ width: 13, height: 13 }} /> Grant Access</button>
-                </Tooltip>
+                </InfoTip>
               </div>
             </form>
           </div>

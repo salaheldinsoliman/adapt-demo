@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNode } from '../context/NodeContext';
-import Tooltip from './Tooltip';
+import InfoTip from './InfoTip';
 
 const ALPHA_CREDS = [
   { role: 'Exporter · Morocco',          username: 'atlas',      label: 'AtlasPhosphate S.A.' },
@@ -74,11 +74,11 @@ export default function Login() {
             <label>Password</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
           </div>
-          <Tooltip text="Sign in to your account" position="top">
+          <InfoTip title="Sign in to your account" description="Authenticate with your credentials to access the ADAPT trade platform" position="top">
             <button type="submit" className="btn btn-p" style={{ width: '100%', justifyContent: 'center', padding: '10px 16px' }} disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
-          </Tooltip>
+          </InfoTip>
         </form>
 
         <div className="demo-creds">
