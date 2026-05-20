@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup, useMapContext } f
 import { AnimatePresence, motion } from 'framer-motion';
 import { Wifi, WifiOff, Unlink, Radio, Plus, Minus, Maximize2, X, ShieldCheck, Building2, MapPin, Server } from 'lucide-react';
 import { COUNTRY_COORDS, COUNTRY_SPREAD, ISO_TO_COUNTRY, countryFromRole } from '../data/countries';
+import InfoTip from './InfoTip';
 
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 const COLOR_BY_SIDE = {
@@ -437,19 +438,21 @@ function CountryDetailPanel({ country, onClose, peerNodeName, nodeName, expanded
             <span>{country.orgs.length} organization{country.orgs.length > 1 ? 's' : ''}</span>
           </div>
         </div>
-        <button className="tn-detail-close" onClick={onClose}><X style={{ width: 14, height: 14 }} /></button>
+        <InfoTip title="Close panel" description="Collapse the panel and return to the map" position="left">
+          <button className="tn-detail-close" onClick={onClose}><X style={{ width: 14, height: 14 }} /></button>
+        </InfoTip>
       </div>
       <div className="tn-detail-list">
         {country.orgs.map((org, i) => {
           const key = `${org.side}-${org.id}`;
           const isOpen = expandedOrgKey === key;
           return (
-            <button
-              key={`${org.id}-${i}`}
-              type="button"
-              className={`tn-org-card ${isOpen ? 'tn-org-card--open' : ''}`}
-              onClick={() => onToggleExpand(isOpen ? null : key)}
-            >
+            <InfoTip key={`${org.id}-${i}`} title={isOpen ? `Collapse ${org.name}` : `Expand ${org.name}`} description={isOpen ? "Hide this organisation's details" : "Show this organisation's ID, registration, and DID details"} position="top">
+              <button
+                type="button"
+                className={`tn-org-card ${isOpen ? 'tn-org-card--open' : ''}`}
+                onClick={() => onToggleExpand(isOpen ? null : key)}
+              >
               <div className="tn-org-icon" style={{ background: `${COLOR_BY_SIDE[org.side]}15`, color: COLOR_BY_SIDE[org.side] }}>
                 <Building2 style={{ width: 14, height: 14 }} />
               </div>
@@ -514,6 +517,7 @@ function CountryDetailPanel({ country, onClose, peerNodeName, nodeName, expanded
                 </AnimatePresence>
               </div>
             </button>
+            </InfoTip>
           );
         })}
       </div>
@@ -557,7 +561,9 @@ function NodeDetailPanel({ side, nodeName, orgs, peerConnected, onClose }) {
             )}
           </div>
         </div>
-        <button className="tn-detail-close" onClick={onClose}><X style={{ width: 14, height: 14 }} /></button>
+        <InfoTip title="Close panel" description="Collapse the panel and return to the map" position="left">
+          <button className="tn-detail-close" onClick={onClose}><X style={{ width: 14, height: 14 }} /></button>
+        </InfoTip>
       </div>
       <div className="tn-detail-list">
         {Object.entries(byCountry).map(([country, list]) => (
@@ -673,10 +679,14 @@ export default function TradeNetworkPanel({
             <span><span className="tn-arc-swatch" /> Trade route</span>
           </div>
           {peerConnected
-            ? <button className="btn btn-sm btn-d" onClick={onDisconnect}><Unlink style={{ width: 11, height: 11 }} /> Disconnect</button>
-            : <button className="btn btn-sm btn-p" onClick={onConnect} disabled={connecting}>
-                <Radio style={{ width: 11, height: 11 }} /> {connecting ? 'Connecting…' : 'Connect to peer'}
-              </button>}
+            ? <InfoTip title="Disconnect from peer node" description="Remove the peer node connection and return to local-only mode" position="bottom">
+                <button className="btn btn-sm btn-d" onClick={onDisconnect}><Unlink style={{ width: 11, height: 11 }} /> Disconnect</button>
+              </InfoTip>
+            : <InfoTip title="Connect to peer node" description="Establish a new peer connection to share data between nodes" position="bottom">
+                <button className="btn btn-sm btn-p" onClick={onConnect} disabled={connecting}>
+                  <Radio style={{ width: 11, height: 11 }} /> {connecting ? 'Connecting…' : 'Connect to peer'}
+                </button>
+              </InfoTip>}
         </div>
       </div>
 
@@ -774,9 +784,15 @@ export default function TradeNetworkPanel({
         </ComposableMap>
 
         <div className="tn-zoom">
-          <button className="tn-zoom-btn" onClick={zoomIn} title="Zoom in"><Plus style={{ width: 14, height: 14 }} /></button>
-          <button className="tn-zoom-btn" onClick={zoomOut} title="Zoom out"><Minus style={{ width: 14, height: 14 }} /></button>
-          <button className="tn-zoom-btn" onClick={reset} title="Reset view"><Maximize2 style={{ width: 13, height: 13 }} /></button>
+          <InfoTip title="Zoom in" description="Increase the map zoom level to see more detail" position="left">
+            <button className="tn-zoom-btn" onClick={zoomIn}><Plus style={{ width: 14, height: 14 }} /></button>
+          </InfoTip>
+          <InfoTip title="Zoom out" description="Decrease the map zoom level to see a broader view" position="left">
+            <button className="tn-zoom-btn" onClick={zoomOut}><Minus style={{ width: 14, height: 14 }} /></button>
+          </InfoTip>
+          <InfoTip title="Reset map view" description="Return the map to its default position and zoom level" position="left">
+            <button className="tn-zoom-btn" onClick={reset}><Maximize2 style={{ width: 13, height: 13 }} /></button>
+          </InfoTip>
         </div>
 
         <AnimatePresence>

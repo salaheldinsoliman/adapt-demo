@@ -3,6 +3,7 @@ import { useNode } from '../context/NodeContext';
 import { api } from '../utils/api';
 import XmlViewer from './XmlViewer';
 import { Plus, Upload, Send, Download, FileText, Lock, X, AlertTriangle, ChevronLeft, Eye, Code2 } from 'lucide-react';
+import InfoTip from './InfoTip';
 
 function fmtValue(val, currency = 'USD') {
   if (!val || isNaN(Number(val))) return '—';
@@ -104,9 +105,11 @@ export default function Consignments({ searchQ = '', targetConsignment = null, o
     return (
       <div className="stack">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <button className="btn btn-s btn-sm" onClick={() => setViewingXml(null)}>
-            <ChevronLeft style={{ width: 13, height: 13 }} /> Back to Documents
-          </button>
+          <InfoTip title="Back to Documents" description="Return to the full documents list for this consignment" position="right">
+            <button className="btn btn-s btn-sm" onClick={() => setViewingXml(null)}>
+              <ChevronLeft style={{ width: 13, height: 13 }} /> Back to Documents
+            </button>
+          </InfoTip>
           <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{viewingXml.title}</span>
         </div>
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -143,22 +146,25 @@ export default function Consignments({ searchQ = '', targetConsignment = null, o
           <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>Consignments</h2>
           <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>ADAPT trade documents anchored on ledger</div>
         </div>
-        <button className="btn btn-p" onClick={() => setShowCreate(true)}><Plus style={{ width: 14, height: 14 }} /> New Consignment</button>
+        <InfoTip title="Create a new consignment" description="Open the form to register a new shipment record on the IOTA ledger" position="left">
+          <button className="btn btn-p" onClick={() => setShowCreate(true)}><Plus style={{ width: 14, height: 14 }} /> New Consignment</button>
+        </InfoTip>
       </div>
 
       {/* Filter tabs */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {filters.map(f => (
-          <button
-            key={f.id}
-            className={`btn btn-sm ${activeFilter === f.id ? 'btn-p' : 'btn-s'}`}
-            onClick={() => setActiveFilter(f.id)}
-          >
-            {f.label}
-            <span style={{ marginLeft: 4, opacity: 0.7, fontSize: 10 }}>
-              ({f.id === 'all' ? consignments.length : consignments.filter(c => c.status === f.id).length})
-            </span>
-          </button>
+          <InfoTip key={f.id} title={f.id === 'all' ? 'Show all consignments' : `Filter by ${f.label}`} description={f.id === 'all' ? "Display every consignment regardless of status" : "Show only consignments with this status"} position="bottom">
+            <button
+              className={`btn btn-sm ${activeFilter === f.id ? 'btn-p' : 'btn-s'}`}
+              onClick={() => setActiveFilter(f.id)}
+            >
+              {f.label}
+              <span style={{ marginLeft: 4, opacity: 0.7, fontSize: 10 }}>
+                ({f.id === 'all' ? consignments.length : consignments.filter(c => c.status === f.id).length})
+              </span>
+            </button>
+          </InfoTip>
         ))}
       </div>
 
@@ -182,7 +188,9 @@ export default function Consignments({ searchQ = '', targetConsignment = null, o
               {filtered.map(c => (
                 <tr key={c.id} onClick={() => setSelectedC(selectedC?.id === c.id ? null : c)} style={{ background: selectedC?.id === c.id ? 'var(--accent-light)' : undefined }}>
                   <td>
-                    <button className="ucr-link" onClick={e => { e.stopPropagation(); setSelectedC(selectedC?.id === c.id ? null : c); setTimeout(() => detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80); }}>{c.ucr}</button>
+                    <InfoTip title={`View documents for ${c.ucr}`} description="Open all trade documents attached to this consignment" position="right">
+                      <button className="ucr-link" onClick={e => { e.stopPropagation(); setSelectedC(selectedC?.id === c.id ? null : c); setTimeout(() => detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80); }}>{c.ucr}</button>
+                    </InfoTip>
                     <div className="ucr-date">{c.shipDate || new Date(c.createdAt || Date.now()).toLocaleDateString()}</div>
                   </td>
                   <td>
@@ -238,9 +246,15 @@ export default function Consignments({ searchQ = '', targetConsignment = null, o
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6 }}>
-              <button className="btn btn-p btn-sm" onClick={() => setShowUpload(true)}><Upload style={{ width: 12, height: 12 }} /> Upload</button>
-              <button className="btn btn-s btn-sm" onClick={() => setShowShare(true)}><Send style={{ width: 12, height: 12 }} /> Share</button>
-              <button className="btn btn-s btn-sm" onClick={() => setSelectedC(null)}><X style={{ width: 12, height: 12 }} /></button>
+              <InfoTip title="Upload a document" description="Attach and anchor a new trade document to this consignment" position="bottom">
+                <button className="btn btn-p btn-sm" onClick={() => setShowUpload(true)}><Upload style={{ width: 12, height: 12 }} /> Upload</button>
+              </InfoTip>
+              <InfoTip title="Share this consignment" description="Grant other organisations access to view this consignment's documents" position="bottom">
+                <button className="btn btn-s btn-sm" onClick={() => setShowShare(true)}><Send style={{ width: 12, height: 12 }} /> Share</button>
+              </InfoTip>
+              <InfoTip title="Close consignment detail" description="Collapse the detail panel and return to the consignments list" position="bottom">
+                <button className="btn btn-s btn-sm" onClick={() => setSelectedC(null)}><X style={{ width: 12, height: 12 }} /></button>
+              </InfoTip>
             </div>
           </div>
 
@@ -302,9 +316,11 @@ export default function Consignments({ searchQ = '', targetConsignment = null, o
                     </div>
                     <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                       {isXml && (
-                        <button className="btn btn-s btn-sm" onClick={() => setViewingXml(d)}>
-                          <Eye style={{ width: 11, height: 11 }} /> View XML
-                        </button>
+                        <InfoTip title={`View XML for ${d.title}`} description="Preview the raw XML data for this trade document" position="left">
+                          <button className="btn btn-s btn-sm" onClick={() => setViewingXml(d)}>
+                            <Eye style={{ width: 11, height: 11 }} /> View XML
+                          </button>
+                        </InfoTip>
                       )}
                       {d.filename && (
                         <a href={api.downloadUrl(d.id)} className="btn btn-s btn-sm" style={{ textDecoration: 'none' }} target="_blank" rel="noreferrer">
@@ -344,8 +360,12 @@ function CreateModal({ onClose, userId }) {
         </div>
         <div className="fg"><label>Description</label><textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Consignment description..." /></div>
         <div className="modal-act">
-          <button className="btn btn-s" onClick={onClose}>Cancel</button>
-          <button className="btn btn-p" onClick={submit}><Plus style={{ width: 13, height: 13 }} /> Create & Anchor</button>
+          <InfoTip title="Cancel consignment creation" description="Discard the form and return to the consignments list" position="top">
+            <button className="btn btn-s" onClick={onClose}>Cancel</button>
+          </InfoTip>
+          <InfoTip title="Create consignment and anchor on ledger" description="Submit this consignment and write a tamper-proof record to the IOTA Tangle" position="top">
+            <button className="btn btn-p" onClick={submit}><Plus style={{ width: 13, height: 13 }} /> Create & Anchor</button>
+          </InfoTip>
         </div>
       </div>
     </div>
@@ -384,8 +404,12 @@ function UploadModal({ consignment, userId, onClose }) {
           <input ref={fileRef} type="file" style={{ display: 'none' }} onChange={e => setFile(e.target.files[0])} />
         </div>
         <div className="modal-act">
-          <button className="btn btn-s" onClick={onClose}>Cancel</button>
-          <button className="btn btn-p" onClick={submit} disabled={!title.trim()}><Upload style={{ width: 13, height: 13 }} /> Upload & Anchor</button>
+          <InfoTip title="Cancel upload" description="Discard the selected file and close the upload form" position="top">
+            <button className="btn btn-s" onClick={onClose}>Cancel</button>
+          </InfoTip>
+          <InfoTip title="Upload document and anchor on ledger" description="Submit the document and anchor its hash on the IOTA Tangle for verification" position="top">
+            <button className="btn btn-p" onClick={submit} disabled={!title.trim()}><Upload style={{ width: 13, height: 13 }} /> Upload & Anchor</button>
+          </InfoTip>
         </div>
       </div>
     </div>
@@ -426,8 +450,12 @@ function ShareModal({ consignment, user, allOrgs, peerOrgs, peerConnected, onClo
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.3px' }}>Share Mode</div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button className={`btn btn-sm ${shareMode === 'all' ? 'btn-p' : 'btn-s'}`} onClick={() => setShareMode('all')}>All documents ({docs.length})</button>
-              <button className={`btn btn-sm ${shareMode === 'selective' ? 'btn-p' : 'btn-s'}`} onClick={() => setShareMode('selective')}>Select specific</button>
+              <InfoTip title="Share all documents" description="Grant the selected organisation access to every document in this consignment" position="bottom">
+                <button className={`btn btn-sm ${shareMode === 'all' ? 'btn-p' : 'btn-s'}`} onClick={() => setShareMode('all')}>All documents ({docs.length})</button>
+              </InfoTip>
+              <InfoTip title="Share selected documents only" description="Grant access only to the documents you have individually checked" position="bottom">
+                <button className={`btn btn-sm ${shareMode === 'selective' ? 'btn-p' : 'btn-s'}`} onClick={() => setShareMode('selective')}>Select specific</button>
+              </InfoTip>
             </div>
           </div>
         )}
@@ -458,13 +486,21 @@ function ShareModal({ consignment, user, allOrgs, peerOrgs, peerConnected, onClo
                   <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{o.role}{o.nodeName ? ` — ${o.nodeName}` : ''}</div>
                 </div>
                 {has
-                  ? <button className="btn btn-sm btn-d" onClick={() => doRevoke(o)}>Revoke</button>
-                  : <button className="btn btn-sm btn-p" onClick={() => doShare(o)} disabled={disabled || (shareMode === 'selective' && selectedDocIds.length === 0)}><Send style={{ width: 11, height: 11 }} /> Share</button>}
+                  ? <InfoTip title={`Revoke access for ${o.name}`} description="Remove this organisation's read access to the shared documents" position="left">
+                      <button className="btn btn-sm btn-d" onClick={() => doRevoke(o)}>Revoke</button>
+                    </InfoTip>
+                  : <InfoTip title={`Share with ${o.name}`} description="Grant this organisation read access to the selected documents" position="left">
+                      <button className="btn btn-sm btn-p" onClick={() => doShare(o)} disabled={disabled || (shareMode === 'selective' && selectedDocIds.length === 0)}><Send style={{ width: 11, height: 11 }} /> Share</button>
+                    </InfoTip>}
               </div>
             );
           })
         )}
-        <div className="modal-act"><button className="btn btn-p" onClick={onClose}>Done</button></div>
+        <div className="modal-act">
+          <InfoTip title="Close and return" description="Close the sharing panel and return to the consignment" position="top">
+            <button className="btn btn-p" onClick={onClose}>Done</button>
+          </InfoTip>
+        </div>
       </div>
     </div>
   );

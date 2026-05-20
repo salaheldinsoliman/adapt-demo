@@ -4,6 +4,7 @@ import { api } from '../utils/api';
 import TradeNetworkPanel from './TradeNetworkPanel';
 import { countryFromRole } from '../data/countries';
 import { Server, Link2, Globe } from 'lucide-react';
+import InfoTip from './InfoTip';
 
 export default function Network() {
   const { user, nodeInfo, peerConnected, peerOrgs, tangleLog, refreshKey, refresh } = useNode();
@@ -100,20 +101,21 @@ export default function Network() {
                 const key = `local-${o.id}`;
                 const isActive = selection.expandedOrgKey === key;
                 return (
-                  <button
-                    key={o.id}
-                    type="button"
-                    className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
-                    onClick={() => hasCountry && focusOrg(o, 'local')}
-                    disabled={!hasCountry}
-                  >
-                    <span className={`net-org-dot ${o.verified ? 'on' : ''}`} />
-                    <div className="net-org-info">
-                      <div className="net-org-name">{o.name}</div>
-                      <div className="net-org-role">{o.role}</div>
-                    </div>
-                    {o.verified && <span className="pill pill-g pill-dot">DID</span>}
-                  </button>
+                  <InfoTip key={o.id} title={hasCountry ? `Focus ${o.name} on map` : o.name} description={hasCountry ? "Pan the world map to this organisation's location" : "This organisation has no mapped geographic location"} position="right">
+                    <button
+                      type="button"
+                      className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
+                      onClick={() => hasCountry && focusOrg(o, 'local')}
+                      disabled={!hasCountry}
+                    >
+                      <span className={`net-org-dot ${o.verified ? 'on' : ''}`} />
+                      <div className="net-org-info">
+                        <div className="net-org-name">{o.name}</div>
+                        <div className="net-org-role">{o.role}</div>
+                      </div>
+                      {o.verified && <span className="pill pill-g pill-dot">DID</span>}
+                    </button>
+                  </InfoTip>
                 );
               })}
             </div>
@@ -139,20 +141,21 @@ export default function Network() {
                 const key = `peer-${o.id}`;
                 const isActive = selection.expandedOrgKey === key;
                 return (
-                  <button
-                    key={o.id}
-                    type="button"
-                    className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
-                    onClick={() => hasCountry && focusOrg(o, 'peer')}
-                    disabled={!hasCountry}
-                  >
-                    <span className={`net-org-dot peer ${o.verified ? 'on' : ''}`} />
-                    <div className="net-org-info">
-                      <div className="net-org-name">{o.name}</div>
-                      <div className="net-org-role">{o.role}</div>
-                    </div>
-                    {o.verified && <span className="pill pill-g pill-dot">DID</span>}
-                  </button>
+                  <InfoTip key={o.id} title={hasCountry ? `Focus ${o.name} on map` : o.name} description={hasCountry ? "Pan the world map to this organisation's location" : "This organisation has no mapped geographic location"} position="left">
+                    <button
+                      type="button"
+                      className={`net-org-row ${hasCountry ? 'net-org-row--clickable' : ''} ${isActive ? 'net-org-row--active' : ''}`}
+                      onClick={() => hasCountry && focusOrg(o, 'peer')}
+                      disabled={!hasCountry}
+                    >
+                      <span className={`net-org-dot peer ${o.verified ? 'on' : ''}`} />
+                      <div className="net-org-info">
+                        <div className="net-org-name">{o.name}</div>
+                        <div className="net-org-role">{o.role}</div>
+                      </div>
+                      {o.verified && <span className="pill pill-g pill-dot">DID</span>}
+                    </button>
+                  </InfoTip>
                 );
               })}
             </div>
@@ -177,11 +180,17 @@ export default function Network() {
                   </div>
                   {n.connected
                     ? <span className="pill pill-g pill-dot">Connected</span>
-                    : <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>}
+                    : <InfoTip title="Connect to this node" description="Establish a peer connection with this network node" position="left">
+                        <button className="btn btn-p btn-sm" onClick={handleConnect} disabled={connecting}><Link2 style={{ width: 11, height: 11 }} />{connecting ? 'Connecting...' : 'Connect'}</button>
+                      </InfoTip>}
                 </div>
               ))
             )}
-            <div className="modal-act"><button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button></div>
+            <div className="modal-act">
+              <InfoTip title="Close this dialog" description="Discard changes and close this dialog" position="top">
+                <button className="btn btn-s" onClick={() => setShowDiscover(false)}>Close</button>
+              </InfoTip>
+            </div>
           </div>
         </div>
       )}

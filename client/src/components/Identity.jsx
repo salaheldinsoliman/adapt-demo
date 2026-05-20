@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNode } from '../context/NodeContext';
 import { api } from '../utils/api';
 import { CheckCircle, XCircle, Loader, Shield, Edit3, Search, AlertTriangle, ExternalLink } from 'lucide-react';
+import InfoTip from './InfoTip';
 
 export default function Identity() {
   const { user, peerOrgs, peerConnected, refresh, refreshKey } = useNode();
@@ -94,9 +95,11 @@ export default function Identity() {
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{org.role}</p>
           </div>
         )}
-        <button onClick={() => setEditing(editing === org.id ? null : org.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}>
-          <Edit3 style={{ width: 13, height: 13 }} />
-        </button>
+        <InfoTip title={editing === org.id ? 'Cancel editing' : 'Edit organisation'} description={editing === org.id ? "Discard unsaved changes to this organisation" : "Update this organisation's name and role"} position="left">
+          <button onClick={() => setEditing(editing === org.id ? null : org.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}>
+            <Edit3 style={{ width: 13, height: 13 }} />
+          </button>
+        </InfoTip>
       </div>
       <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 10 }}>User: <span style={{ fontFamily: 'var(--mono)' }}>{org.username}</span></div>
       {org.verified ? (
@@ -115,10 +118,12 @@ export default function Identity() {
           )}
         </>
       ) : (
-        <button className="btn btn-p btn-sm" style={{ width: '100%', justifyContent: 'center' }}
-          onClick={() => { setVerifying(org); setRegNum(''); setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>
-          <Shield style={{ width: 12, height: 12 }} /> Register DID
-        </button>
+        <InfoTip title="Register a Decentralised Identifier" description="Anchor a W3C DID on the IOTA Tangle to verify this organisation's identity" position="top">
+          <button className="btn btn-p btn-sm" style={{ width: '100%', justifyContent: 'center' }}
+            onClick={() => { setVerifying(org); setRegNum(''); setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>
+            <Shield style={{ width: 12, height: 12 }} /> Register DID
+          </button>
+        </InfoTip>
       )}
     </div>
   );
@@ -243,9 +248,11 @@ export default function Identity() {
                       </td>
                       <td>
                         {o.verified && (
-                          <button className="btn btn-s btn-sm" style={{ fontSize: 10.5, padding: '4px 10px' }} onClick={() => setCredentialOrg(o)}>
-                            <ExternalLink style={{ width: 11, height: 11 }} /> View Credential
-                          </button>
+                          <InfoTip title="View verifiable credential" description="Inspect the W3C verifiable credential issued for this organisation" position="left">
+                            <button className="btn btn-s btn-sm" style={{ fontSize: 10.5, padding: '4px 10px' }} onClick={() => setCredentialOrg(o)}>
+                              <ExternalLink style={{ width: 11, height: 11 }} /> View Credential
+                            </button>
+                          </InfoTip>
                         )}
                       </td>
                     </tr>
@@ -267,8 +274,12 @@ export default function Identity() {
                 <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 16 }}>Enter a business registration number. Use BRN-123456 to pass or BRN-000000 to see a denial.</p>
                 <div className="fg"><label>Registration Number</label><input value={regNum} onChange={e => setRegNum(e.target.value)} placeholder="e.g. BRN-123456" autoFocus /></div>
                 <div className="modal-act">
-                  <button className="btn btn-s" onClick={() => setVerifying(null)}>Cancel</button>
-                  <button className="btn btn-p" onClick={runVerification} disabled={regNum.length < 4}>Verify & Register</button>
+                  <InfoTip title="Cancel registration" description="Abort the DID registration process without saving" position="top">
+                    <button className="btn btn-s" onClick={() => setVerifying(null)}>Cancel</button>
+                  </InfoTip>
+                  <InfoTip title="Verify registration number and issue DID" description="Check the company registration and anchor a DID on the IOTA ledger" position="top">
+                    <button className="btn btn-p" onClick={runVerification} disabled={regNum.length < 4}>Verify & Register</button>
+                  </InfoTip>
                 </div>
               </>
             )}
@@ -308,8 +319,14 @@ export default function Identity() {
                   </div>
                 )}
                 <div className="modal-act">
-                  {stage === 'failed' && <button className="btn btn-s" onClick={() => { setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>Try Again</button>}
-                  <button className="btn btn-p" onClick={() => setVerifying(null)}>{stage === 'passed' ? 'Done' : 'Close'}</button>
+                  {stage === 'failed' && (
+                    <InfoTip title="Try a different registration number" description="Go back and enter a different company registration number" position="top">
+                      <button className="btn btn-s" onClick={() => { setStage('input'); setSteps([]); setFailMsg(''); setAttestedBy(''); }}>Try Again</button>
+                    </InfoTip>
+                  )}
+                  <InfoTip title={stage === 'passed' ? 'Close and return' : 'Close this dialog'} description={stage === 'passed' ? "Return to the digital identity list" : "Close without completing registration"} position="top">
+                    <button className="btn btn-p" onClick={() => setVerifying(null)}>{stage === 'passed' ? 'Done' : 'Close'}</button>
+                  </InfoTip>
                 </div>
               </>
             )}
@@ -353,7 +370,9 @@ export default function Identity() {
             </div>
 
             <div className="modal-act" style={{ marginTop: 16 }}>
-              <button className="btn btn-p" onClick={() => setCredentialOrg(null)}>Close</button>
+              <InfoTip title="Close credential view" description="Close the verifiable credential inspector and return" position="top">
+                <button className="btn btn-p" onClick={() => setCredentialOrg(null)}>Close</button>
+              </InfoTip>
             </div>
           </div>
         </div>

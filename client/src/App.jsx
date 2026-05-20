@@ -10,6 +10,7 @@ import TradeFinance from './components/TradeFinance';
 import Permissions from './components/Permissions';
 import TangleExplorer from './components/TangleExplorer';
 import { LayoutDashboard, FileStack, Fingerprint, Shield, Activity, LogOut, Wifi, WifiOff, CreditCard, Landmark, Globe } from 'lucide-react';
+import Tooltip from './components/Tooltip';
 
 const PAGES = [
   { id: 'dashboard',     label: 'Dashboard',      icon: LayoutDashboard },
@@ -50,9 +51,11 @@ export default function App() {
 
         <nav className="sb-nav">
           {PAGES.map(p => (
-            <button key={p.id} className={page === p.id ? 'active' : ''} onClick={() => setPage(p.id)}>
-              <p.icon /> {p.label}
-            </button>
+            <Tooltip key={p.id} text={`Go to ${p.label}`} position="right">
+              <button className={page === p.id ? 'active' : ''} onClick={() => setPage(p.id)}>
+                <p.icon /> {p.label}
+              </button>
+            </Tooltip>
           ))}
         </nav>
 
@@ -68,14 +71,18 @@ export default function App() {
             </div>
           </div>
           <div className="sb-links">
-            <button>
-              {peerConnected
-                ? <><Wifi style={{ width: 13, height: 13, color: '#22c55e' }} /> <span>Node Online</span></>
-                : <><WifiOff style={{ width: 13, height: 13 }} /> <span>No Peer</span></>}
-            </button>
-            <button onClick={logout}>
-              <LogOut style={{ width: 13, height: 13 }} /> Sign Out
-            </button>
+            <Tooltip text={peerConnected ? 'Node Online — Peer synced' : 'No Peer — Local only'} position="right">
+              <button>
+                {peerConnected
+                  ? <><Wifi style={{ width: 13, height: 13, color: '#22c55e' }} /> <span>Node Online</span></>
+                  : <><WifiOff style={{ width: 13, height: 13 }} /> <span>No Peer</span></>}
+              </button>
+            </Tooltip>
+            <Tooltip text="Sign out of your account" position="right">
+              <button onClick={logout}>
+                <LogOut style={{ width: 13, height: 13 }} /> Sign Out
+              </button>
+            </Tooltip>
           </div>
         </div>
       </aside>
@@ -96,11 +103,13 @@ export default function App() {
             </div>
           </div>
           <div className="hdr-right">
-            <button className="hdr-bell">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-            </button>
+            <Tooltip text="Notifications" position="bottom">
+              <button className="hdr-bell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </button>
+            </Tooltip>
             <div className="hdr-user">
               <div className="hdr-user-info" style={{ textAlign: 'right' }}>
                 <div className="name">{user.name}</div>
